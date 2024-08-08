@@ -1,19 +1,7 @@
-## Foundry
+### Ronin Testnet (Saigon)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
+Deploy: `forge create src/DailyDonut.sol:DailyDonut --legacy --rpc-url https://saigon-testnet.roninchain.com/rpc --private-key $PRIVATE_KEY `
+Verify: `forge verify-contract --verifier sourcify --verifier-url https://sourcify.roninchain.com/server/ --chain-id 2021 <ADDRESS> src/DailyDonut.sol:DailyDonut`
 
 ### Build
 
