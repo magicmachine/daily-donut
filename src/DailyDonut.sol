@@ -14,19 +14,14 @@ contract DailyDonut {
     function claimDonut() public {
         uint256 currentDay = getCurrentDay();
 
-        require(
-            lastClaimDay[msg.sender] < currentDay,
-            "You can only claim once per day"
-        );
+        require(lastClaimDay[msg.sender] < currentDay, "You can only claim once per day");
 
         lastClaimDay[msg.sender] = currentDay;
         claimId++;
         emit Transfer(address(0), msg.sender, claimId);
     }
 
-    function timeUntilNextClaim(
-        address _address
-    ) public view returns (uint256) {
+    function timeUntilNextClaim(address _address) public view returns (uint256) {
         uint256 currentDay = getCurrentDay();
         if (lastClaimDay[_address] < currentDay) {
             return 0;
