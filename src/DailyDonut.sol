@@ -2,29 +2,40 @@
 pragma solidity 0.8.23;
 
 contract DailyDonut {
-    mapping(address => uint256) public lastClaimTimestamp;
-
-    uint256 public _claimId;
+    mapping(address => uint256) public lastClaimDay;
+    uint256 public claimId;
 
     event Transfer(address indexed from, address indexed to, uint256 claimId);
 
-    function claimDonut() public {
-        require(lastClaimTimestamp[msg.sender] == 0 || block.timestamp >= lastClaimTimestamp[msg.sender] + 24 hours, "You can only claim once every 24 hours");
-
-        lastClaimTimestamp[msg.sender] = block.timestamp;
-
-        _claimId++;
-
-        emit Transfer(address(0), msg.sender, _claimId);
+    function getCurrentDay() public view returns (uint256) {
+        return block.timestamp / 1 days;
     }
 
-    // Function to check the time remaining until next claim
-    function timeUntilNextClaim() public view returns (uint256) {
-        uint256 timeSinceLastClaim = block.timestamp - lastClaimTimestamp[msg.sender];
-        if (timeSinceLastClaim >= 24 hours) {
+    function claimDonut() public {
+        uint256 currentDay = getCurrentDay();
+
+        require(
+            lastClaimDay[msg.sender] < currentDay,
+            "You can only claim once per day"
+        );
+
+        lastClaimDay[msg.sender] = currentDay;
+        claimId++;
+        emit Transfer(address(0), msg.sender, claimId);
+    }
+
+    function timeUntilNextClaim(
+        address _address
+    ) public view returns (uint256) {
+        uint256 currentDay = getCurrentDay();
+        if (lastClaimDay[_address] < currentDay) {
             return 0;
         }
-        return 24 hours - timeSinceLastClaim;
+        uint256 nextMidnight = (currentDay + 1) * 1 days;
+        return nextMidnight - block.timestamp;
     }
 
+    function canClaimToday(address _address) public view returns (bool) {
+        return lastClaimDay[_address] < getCurrentDay();
+    }
 }
